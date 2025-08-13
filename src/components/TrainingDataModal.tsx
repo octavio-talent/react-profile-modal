@@ -272,19 +272,19 @@ export const TrainingDataModal: React.FC<TrainingDataModalProps> = ({
                 {...register('textContent')}
                 placeholder="Write any information your persona needs to know"
                 rows={6}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder-gray-400 resize-none ${              
-                  errors.textContent ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                }`}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder-gray-400 resize-none ${errors.textContent ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
                 maxLength={2000}
               />
-                <div className="absolute bottom-3 right-3 text-xs text-gray-400 bg-white px-2 py-1 rounded">
-                  {(watchedValues.textContent || '').length}/2000
-                </div>
+              <div className="absolute bottom-3 right-3 text-xs text-gray-400 bg-white px-2 py-1 rounded">
+                {(watchedValues.textContent || '').length}/2000
+              </div>
+            </div>
               // {errors.textContent && (
               //   <p className="mt-2 text-sm text-red-600">{errors.textContent.message}</p>
               // )}
           )}
-
+          
           {/* Privacy Settings */}
           <div>
             <div className="flex items-center gap-2 mb-4">

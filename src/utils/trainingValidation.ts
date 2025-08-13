@@ -32,7 +32,8 @@ export const trainingSchema = yup.object<TrainingFormData>().shape({
         return false;
       }
       return true;
-    }),
+    })
+    .max(2000, 'Text content must be 2000 characters or less'),
   addToPublic: yup.boolean(),
   addToPrivate: yup.boolean(),
 })

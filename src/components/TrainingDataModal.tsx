@@ -280,7 +280,7 @@ export const TrainingDataModal: React.FC<TrainingDataModalProps> = ({
                 <div className="absolute bottom-3 right-3 text-xs text-gray-400 bg-white px-2 py-1 rounded">
                   {(watchedValues.textContent || '').length}/2000
                 </div>
-              </div>
+              </textarea>
               {errors.textContent && (
                 <p className="mt-2 text-sm text-red-600">{errors.textContent.message}</p>
               )}

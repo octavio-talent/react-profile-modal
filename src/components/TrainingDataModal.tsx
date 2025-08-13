@@ -277,7 +277,7 @@ export const TrainingDataModal: React.FC<TrainingDataModalProps> = ({
                 maxLength={200}
               />
               <div className="absolute bottom-3 right-3 text-xs text-gray-400 bg-white px-2 py-1 rounded">
-                {(watchedValues.textContent || '').length}/2000
+                {(watchedValues.textContent || '').length}/200
               </div>
             </div>
               // {errors.textContent && (

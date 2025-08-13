@@ -1,17 +1,21 @@
 import React from 'react';
+import { UseFormRegister, FieldError } from 'react-hook-form';
+import { FormData } from '../types';
 
 interface FormFieldProps {
   label: string;
-  value: string;
-  onChange: (value: string) => void;
+  name: keyof FormData;
+  register: UseFormRegister<FormData>;
+  error?: FieldError;
   placeholder?: string;
   required?: boolean;
 }
 
 export const FormField: React.FC<FormFieldProps> = ({ 
   label, 
-  value, 
-  onChange, 
+  name,
+  register,
+  error,
   placeholder,
   required = false
 }) => {
@@ -23,12 +27,17 @@ export const FormField: React.FC<FormFieldProps> = ({
       </label>
       <input
         type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
+        {...register(name)}
         placeholder={placeholder}
-        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder-gray-400"
-        required={required}
+        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder-gray-400 ${
+          error ? 'border-red-300 bg-red-50' : 'border-gray-300'
+        }`}
       />
+      {error && (
+        <p className="mt-2 text-sm text-red-600 flex items-center">
+          {error.message}
+        </p>
+      )}
     </div>
   );
 };

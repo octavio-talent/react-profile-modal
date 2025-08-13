@@ -6,3 +6,11 @@ export interface Agent {
   tone: string;
   avatar: string | null;
 }
+
+export interface FormData {
+  avatar: FileList;
+  company: string;
+  companyTitle: string;
+  name: string;
+  tone: string;
+}

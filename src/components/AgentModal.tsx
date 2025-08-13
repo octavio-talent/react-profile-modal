@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Modal } from './Modal';
 import { AvatarSelector } from './AvatarSelector';
 import { FormField } from './FormField';
 import { ToneSelector } from './ToneSelector';
-import { Agent } from '../types';
+import { Agent, FormData } from '../types';
+import { schema } from '../utils/validation';
 
 interface AgentModalProps {
   isOpen: boolean;
@@ -12,73 +15,107 @@ interface AgentModalProps {
 }
 
 export const AgentModal: React.FC<AgentModalProps> = ({ isOpen, onClose, onAddAgent }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    company: '',
-    companyTitle: '',
-    tone: '',
-    avatar: null as string | null
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.name || !formData.company || !formData.companyTitle || !formData.tone) {
-      return;
-    }
-
-    onAddAgent(formData);
-    handleClose();
-  };
-
-  const handleClose = () => {
-    setFormData({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    formState: { errors, isValid }
+  } = useForm<FormData>({
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+    defaultValues: {
       name: '',
       company: '',
       companyTitle: '',
       tone: '',
-      avatar: null
+      avatar: new DataTransfer().files // Empty FileList
+    }
+  });
+
+  const onSubmit = (data: FormData) => {
+    // Convert FileList to base64 for storage
+    const file = data.avatar[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const avatarUrl = e.target?.result as string;
+        onAddAgent({
+          name: data.name,
+          company: data.company,
+          companyTitle: data.companyTitle,
+          tone: data.tone,
+          avatar: avatarUrl
+        });
+        handleClose();
+      };
+      reader.readAsDataURL(file);
+    } else {
+      onAddAgent({
+        name: data.name,
+        company: data.company,
+        companyTitle: data.companyTitle,
+        tone: data.tone,
+        avatar: null
+      });
+      handleClose();
+    }
+  };
+
+  const handleClose = () => {
+    reset({
+      name: '',
+      company: '',
+      companyTitle: '',
+      tone: '',
+      avatar: new DataTransfer().files
     });
     onClose();
   };
 
-  const isFormValid = formData.name && formData.company && formData.companyTitle && formData.tone;
-
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="Add New Agent">
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <AvatarSelector
-          selectedAvatar={formData.avatar}
-          onAvatarSelect={(avatarUrl) => setFormData({ ...formData, avatar: avatarUrl })}
+          register={register}
+          setValue={setValue}
+          watch={watch}
+          error={errors.avatar}
         />
 
         <FormField
           label="Name"
-          value={formData.name}
-          onChange={(value) => setFormData({ ...formData, name: value })}
+          name="name"
+          register={register}
+          error={errors.name}
           placeholder="Enter agent name"
           required
         />
 
         <FormField
           label="Company"
-          value={formData.company}
-          onChange={(value) => setFormData({ ...formData, company: value })}
+          name="company"
+          register={register}
+          error={errors.company}
           placeholder="Enter company name"
           required
         />
 
         <FormField
           label="Company Title"
-          value={formData.companyTitle}
-          onChange={(value) => setFormData({ ...formData, companyTitle: value })}
+          name="companyTitle"
+          register={register}
+          error={errors.companyTitle}
           placeholder="Enter job title"
           required
         />
 
         <ToneSelector
-          selectedTone={formData.tone}
-          onToneSelect={(tone) => setFormData({ ...formData, tone })}
+          register={register}
+          setValue={setValue}
+          watch={watch}
+          error={errors.tone}
         />
 
         {/* Action Buttons */}
@@ -92,9 +129,9 @@ export const AgentModal: React.FC<AgentModalProps> = ({ isOpen, onClose, onAddAg
           </button>
           <button
             type="submit"
-            disabled={!isFormValid}
+            disabled={!isValid}
             className={`flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-              isFormValid
+              isValid
                 ? 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}

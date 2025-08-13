@@ -1,9 +1,13 @@
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
+import { UseFormRegister, UseFormSetValue, UseFormWatch, FieldError } from 'react-hook-form';
+import { FormData } from '../types';
 
 interface ToneSelectorProps {
-  selectedTone: string;
-  onToneSelect: (tone: string) => void;
+  register: UseFormRegister<FormData>;
+  setValue: UseFormSetValue<FormData>;
+  watch: UseFormWatch<FormData>;
+  error?: FieldError;
 }
 
 const toneOptions = [
@@ -17,19 +21,28 @@ const toneOptions = [
   'Warm'
 ];
 
-export const ToneSelector: React.FC<ToneSelectorProps> = ({ selectedTone, onToneSelect }) => {
+export const ToneSelector: React.FC<ToneSelectorProps> = ({ register, setValue, watch, error }) => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const selectedTone = watch('tone');
+
+  const handleToneSelect = (tone: string) => {
+    setValue('tone', tone);
+    setIsOpen(false);
+  };
 
   return (
     <div className="mb-6 relative">
       <label className="block text-sm font-semibold text-gray-700 mb-2">
         Tone <span className="text-red-500">*</span>
       </label>
+      <input type="hidden" {...register('tone')} />
       <div className="relative">
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full px-4 py-3 text-left border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white flex items-center justify-between"
+          className={`w-full px-4 py-3 text-left border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white flex items-center justify-between ${
+            error ? 'border-red-300 bg-red-50' : 'border-gray-300'
+          }`}
         >
           <span className={selectedTone ? 'text-gray-900' : 'text-gray-400'}>
             {selectedTone || 'Select tone...'}
@@ -43,10 +56,7 @@ export const ToneSelector: React.FC<ToneSelectorProps> = ({ selectedTone, onTone
               <button
                 key={tone}
                 type="button"
-                onClick={() => {
-                  onToneSelect(tone);
-                  setIsOpen(false);
-                }}
+                onClick={() => handleToneSelect(tone)}
                 className={`w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-150 ${
                   selectedTone === tone ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-900'
                 }`}
@@ -57,6 +67,11 @@ export const ToneSelector: React.FC<ToneSelectorProps> = ({ selectedTone, onTone
           </div>
         )}
       </div>
+      {error && (
+        <p className="mt-2 text-sm text-red-600 flex items-center">
+          {error.message}
+        </p>
+      )}
     </div>
   );
 };

@@ -274,7 +274,7 @@ export const TrainingDataModal: React.FC<TrainingDataModalProps> = ({
                 rows={6}
                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder-gray-400 resize-none ${errors.textContent ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
-                maxLength={2000}
+                maxLength={200}
               />
               <div className="absolute bottom-3 right-3 text-xs text-gray-400 bg-white px-2 py-1 rounded">
                 {(watchedValues.textContent || '').length}/2000

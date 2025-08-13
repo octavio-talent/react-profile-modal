@@ -281,10 +281,9 @@ export const TrainingDataModal: React.FC<TrainingDataModalProps> = ({
                   {(watchedValues.textContent || '').length}/2000
                 </div>
               </textarea>
-              {errors.textContent && (
-                <p className="mt-2 text-sm text-red-600">{errors.textContent.message}</p>
-              )}
-            </div>
+              // {errors.textContent && (
+              //   <p className="mt-2 text-sm text-red-600">{errors.textContent.message}</p>
+              // )}
           )}
 
           {/* Privacy Settings */}
